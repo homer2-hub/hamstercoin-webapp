@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HamsterCoin WebApp</title>
@@ -213,15 +213,7 @@ function buyTurboHAMS() {
   window.location.href = "https://t.me/vladsvj";
 }
 
-let lastTap = 0;
-document.addEventListener("touchend", function(e) {
-  const currentTime = new Date().getTime();
-  const tapLength = currentTime - lastTap;
-  if (tapLength < 300 && tapLength > 0) {
-    e.preventDefault();
-  }
-  lastTap = currentTime;
-});
+
 </script>
 
 </body>
