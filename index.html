@@ -67,7 +67,7 @@
   <div class="balance" id="balance">Баланс: 0 HAMS</div>
   <div class="plus" id="plus"></div>
   <div class="circle" onclick="mineCoins()">
-    <img src="hamster.jpg" alt="hamster" />
+    <img id="tap-image" src="hamster.jpg" alt="hamster" />
   </div>
   <button class="upgrade-btn" onclick="openModal()">Улучшения</button>
 
@@ -140,6 +140,16 @@
       const lvl = getCurrentLevel();
       levelInfo.innerText = `${lvl.name} (${lvl.currentXP} / ${lvl.maxXP} XP)`;
       progressFill.style.width = `${Math.min(100, (lvl.currentXP / lvl.maxXP) * 100)}%`;
+
+      const tapImage = document.getElementById("tap-image");
+      if (lvl.name === "Саскэ Учиха") {
+        tapImage.src = "ChatGPT Image 15 мая 2025 г., 17_34_30.png";
+      } else if (lvl.name === "Наруто") {
+        tapImage.src = "ChatGPT Image 15 мая 2025 г., 17_32_35.png";
+      } else {
+        tapImage.src = "hamster.jpg";
+      }
+
     }
 
     function mineCoins() {
