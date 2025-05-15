@@ -17,6 +17,12 @@
       font-size: 24px;
       margin: 20px;
     }
+    .plus {
+      font-size: 20px;
+      color: green;
+      margin: 10px;
+      transition: opacity 1s ease-out;
+    }
     button {
       padding: 15px 25px;
       font-size: 18px;
@@ -35,15 +41,24 @@
 <body>
   <h1>🐹 HamsterCoin</h1>
   <div class="balance" id="balance">Баланс: 100 HAMS</div>
+  <div class="plus" id="plus"></div>
   <button onclick="mineCoins()">⛏ Майнить</button>
+
   <script>
     let balance = 100;
 
     function mineCoins() {
       const mined = Math.floor(Math.random() * 21) + 5;
       balance += mined;
+
       document.getElementById("balance").innerText = `Баланс: ${balance} HAMS`;
-      alert(`Ты намайнил ${mined} HAMS!`);
+      const plus = document.getElementById("plus");
+      plus.innerText = `+${mined} HAMS`;
+      plus.style.opacity = 1;
+
+      setTimeout(() => {
+        plus.style.opacity = 0;
+      }, 1000);
     }
   </script>
 </body>
