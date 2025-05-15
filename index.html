@@ -1,12 +1,13 @@
 
 <!DOCTYPE html>
+
 <html lang="ru">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HamsterCoin WebApp</title>
-  <style>
+<meta content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0" name="viewport"/>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>HamsterCoin WebApp</title>
+<style>
     body {
       touch-action: manipulation;
       background: linear-gradient(to right, #f9f4f1, #ffe6d6);
@@ -61,41 +62,37 @@
       background: #ff2c55; color: white; border: none; cursor: pointer;
     }
   </style>
-</head>
+</meta></head>
 <body>
-  <h1>🐹 HamsterCoin</h1>
-  <div class="level-info" id="level-info">Новичок (0 / 400 XP)</div>
-  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-  <div class="balance" id="balance">Баланс: 0 HAMS</div>
-  <div class="plus" id="plus"></div>
-  <div class="circle" onclick="mineCoins()">
-    <img id="tap-image" src="hamster.jpg" alt="hamster" />
-  </div>
-  <button class="upgrade-btn" onclick="openModal()">Улучшения</button>
-
-  <!-- Модальное окно -->
-  <div id="tiktok-modal">
-    <div class="modal-content">
-      <h2>Улучшения</h2>
-      <div class="upgrade-block">
-        <p id="tiktok-level">TikTok Collaboration: 0 / 15</p>
-        <button onclick="confirmUpgrade()" id="upgrade-confirm-btn">+1 за 15 HAMS</button>
-      </div>
-      <div class="upgrade-block">
-        <p id="autohams-level">AutoHAMS: 0 / 5</p>
-        <button onclick="buyAutoHAMS()" id="auto-btn">Купить за 500 HAMS</button>
-      </div>
-      
-      <div class="upgrade-block">
-        <p>TurboHAMS: мгновенное ускорение</p>
-        <button onclick="buyTurboHAMS()">Купить за 50 грн</button>
-      </div>
-
-      <br><button onclick="closeModal()" id="close-btn">Закрыть</button>
-    </div>
-  </div>
-
-  <script>
+<h1>🐹 HamsterCoin</h1>
+<div class="level-info" id="level-info">Новичок (0 / 400 XP)</div>
+<div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+<div class="balance" id="balance">Баланс: 0 HAMS</div>
+<div class="plus" id="plus"></div>
+<div class="circle" onclick="mineCoins()">
+<img alt="hamster" id="tap-image" src="hamster.jpg"/>
+</div>
+<button class="upgrade-btn" onclick="openModal()">Улучшения</button>
+<!-- Модальное окно -->
+<div id="tiktok-modal">
+<div class="modal-content">
+<h2>Улучшения</h2>
+<div class="upgrade-block">
+<p id="tiktok-level">TikTok Collaboration: 0 / 15</p>
+<button id="upgrade-confirm-btn" onclick="confirmUpgrade()">+1 за 15 HAMS</button>
+</div>
+<div class="upgrade-block">
+<p id="autohams-level">AutoHAMS: 0 / 5</p>
+<button id="auto-btn" onclick="buyAutoHAMS()">Купить за 500 HAMS</button>
+</div>
+<div class="upgrade-block">
+<p>TurboHAMS: мгновенное ускорение</p>
+<button onclick="buyTurboHAMS()">Купить за 50 грн</button>
+</div>
+<br/><button id="close-btn" onclick="closeModal()">Закрыть</button>
+</div>
+</div>
+<script>
     const levels = [
       { name: "Новичок", xp: 400, base: 1 },
       { name: "Про", xp: 600, base: 2 },
@@ -216,6 +213,33 @@ function buyTurboHAMS() {
 
 
 </script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const levelInfo = document.getElementById("level-info");
+  const bg = document.body.style.background;
 
-</body>
+  function updateBackground() {
+    if (!levelInfo) return;
+    const text = levelInfo.innerText;
+    if (text.includes("Новичок") || text.includes("Про")) {
+      document.body.style.backgroundImage = "url('hamstap_game.jpg')";
+      document.body.style.backgroundSize = "cover";
+      document.body.style.backgroundRepeat = "no-repeat";
+      document.body.style.backgroundPosition = "center";
+    } else {
+      document.body.style.background = "linear-gradient(to right, #f9f4f1, #ffe6d6)";
+    }
+  }
+
+  // Первичная установка
+  updateBackground();
+
+  // Переопределим updateDisplay, если он есть, чтобы менять фон при апдейте уровня
+  const originalUpdateDisplay = window.updateDisplay;
+  window.updateDisplay = function() {
+    if (originalUpdateDisplay) originalUpdateDisplay();
+    updateBackground();
+  };
+});
+</script></body>
 </html>
