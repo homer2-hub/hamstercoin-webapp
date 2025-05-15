@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -30,6 +31,10 @@
       margin: 20px auto;
       box-shadow: 0 0 15px rgba(0,0,0,0.2);
       cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+    .circle:active {
+      transform: scale(0.95);
     }
     .circle img {
       width: 100%;
@@ -65,6 +70,37 @@
       box-shadow: 0 4px 6px rgba(0,0,0,0.3);
       cursor: pointer;
     }
+    #tiktok-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000000cc;
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    #tiktok-modal .modal-content {
+      position: relative;
+      background: #fff;
+      padding: 20px;
+      border-radius: 20px;
+      max-width: 90%;
+      text-align: center;
+      background-image: url('hamsterbig.jpg');
+      background-size: cover;
+      box-shadow: 0 0 30px #000;
+    }
+    #tiktok-modal h2,
+    #tiktok-modal p {
+      color: white;
+      text-shadow: 1px 1px 4px #000;
+    }
+    #tiktok-modal button {
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
@@ -79,7 +115,18 @@
     <img src="hamster.jpg" alt="hamster" />
   </div>
 
-  <button class="upgrade-btn" onclick="upgrade()">TikTok Collaboration</button>
+  <button class="upgrade-btn" onclick="openModal()">TikTok Collaboration</button>
+
+  <!-- Модальное окно -->
+  <div id="tiktok-modal">
+    <div class="modal-content">
+      <h2>TikTok Collaboration</h2>
+      <p id="tiktok-level">Уровень: 0 / 15</p>
+      <button onclick="confirmUpgrade()" id="upgrade-confirm-btn">Улучшить (+1 за 15 HAMS)</button>
+      <br><br>
+      <button onclick="closeModal()" style="background:transparent; border:none; color:white; font-size:16px; text-decoration:underline; cursor:pointer;">Закрыть</button>
+    </div>
+  </div>
 
   <script>
     const levels = [
@@ -97,6 +144,9 @@
     const plusEl = document.getElementById("plus");
     const progressFill = document.getElementById("progress-fill");
     const levelInfo = document.getElementById("level-info");
+    const modal = document.getElementById("tiktok-modal");
+    const upgradeLevelEl = document.getElementById("tiktok-level");
+    const upgradeBtn = document.getElementById("upgrade-confirm-btn");
 
     function getCurrentLevel() {
       let total = 0;
@@ -104,7 +154,6 @@
         total += levels[i].xp;
         if (xp < total) return { ...levels[i], index: i, currentXP: xp - (total - levels[i].xp), maxXP: levels[i].xp };
       }
-      // Превышен максимум — Наруто навсегда
       return { ...levels[levels.length - 1], index: levels.length - 1, currentXP: levels[levels.length - 1].xp, maxXP: levels[levels.length - 1].xp };
     }
 
@@ -131,16 +180,25 @@
       updateDisplay();
     }
 
-    function upgrade() {
+    function openModal() {
+      upgradeLevelEl.innerText = `Уровень: ${upgradeLevel} / 15`;
+      upgradeBtn.disabled = upgradeLevel >= 15;
+      upgradeBtn.innerText = upgradeLevel >= 15 ? "Максимум улучшений" : "Улучшить (+1 за 15 HAMS)";
+      modal.style.display = "flex";
+    }
+
+    function closeModal() {
+      modal.style.display = "none";
+    }
+
+    function confirmUpgrade() {
       if (balance >= 15 && upgradeLevel < 15) {
         balance -= 15;
         upgradeLevel++;
         localStorage.setItem('hams', balance);
         localStorage.setItem('upgrade', upgradeLevel);
         updateDisplay();
-        alert(`Уровень TikTok Collaboration: ${upgradeLevel}/15`);
-      } else {
-        alert(upgradeLevel >= 15 ? "Максимум улучшений!" : "Недостаточно HAMS для улучшения");
+        openModal();
       }
     }
 
