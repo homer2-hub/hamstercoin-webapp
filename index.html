@@ -13,93 +13,50 @@
       padding: 30px;
     }
     h1 { color: #b44e00; }
-    .balance {
-      font-size: 24px;
-      margin: 10px;
-    }
-    .plus {
-      font-size: 20px;
-      color: green;
-      margin: 10px;
-      transition: opacity 1s ease-out;
-    }
+    .balance { font-size: 24px; margin: 10px; }
+    .plus { font-size: 20px; color: green; margin: 10px; transition: opacity 1s ease-out; }
     .circle {
-      width: 200px;
-      height: 200px;
-      border-radius: 50%;
-      overflow: hidden;
-      margin: 20px auto;
-      box-shadow: 0 0 15px rgba(0,0,0,0.2);
-      cursor: pointer;
-      transition: transform 0.1s ease;
+      width: 200px; height: 200px; border-radius: 50%;
+      overflow: hidden; margin: 20px auto; box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      cursor: pointer; transition: transform 0.1s ease;
     }
-    .circle:active {
-      transform: scale(0.95);
-    }
-    .circle img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .level-info {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-    .progress-bar {
-      width: 80%;
-      margin: 0 auto 20px auto;
-      background-color: #ddd;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 20px;
-      background-color: #ff9900;
-      width: 0%;
-    }
+    .circle:active { transform: scale(0.95); }
+    .circle img { width: 100%; height: 100%; object-fit: cover; }
+    .level-info { font-size: 18px; margin-bottom: 10px; }
+    .progress-bar { width: 80%; margin: 0 auto 20px auto; background-color: #ddd; border-radius: 10px; overflow: hidden; }
+    .progress-fill { height: 20px; background-color: #ff9900; width: 0%; }
     .upgrade-btn {
-      position: fixed;
-      right: 20px;
-      bottom: 20px;
-      background-color: #ff2c55;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 20px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-      cursor: pointer;
+      position: fixed; right: 20px; bottom: 20px; background-color: #ff2c55; color: white;
+      border: none; padding: 10px 20px; font-size: 16px; border-radius: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3); cursor: pointer;
     }
     #tiktok-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #000000cc;
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: #000000cc; z-index: 1000; justify-content: center; align-items: center;
     }
     #tiktok-modal .modal-content {
-      position: relative;
-      background: #fff;
-      padding: 20px;
-      border-radius: 20px;
-      max-width: 90%;
-      text-align: center;
-      background-image: url('hamsterbig.jpg');
-      background-size: cover;
-      box-shadow: 0 0 30px #000;
+      position: relative; background: rgba(0,0,0,0.6);
+      padding: 20px; border-radius: 20px; max-width: 90%;
+      text-align: center; background-image: url('hamsterbig.jpg');
+      background-size: cover; background-blend-mode: darken; box-shadow: 0 0 30px #000;
     }
-    #tiktok-modal h2,
-    #tiktok-modal p {
-      color: white;
-      text-shadow: 1px 1px 4px #000;
+    #tiktok-modal h2, #tiktok-modal p {
+      color: white; text-shadow: 1px 1px 4px #000;
     }
-    #tiktok-modal button {
-      margin-top: 10px;
+    #close-btn {
+      background-color: rgba(255,255,255,0.2); border: 1px solid white; color: white;
+      padding: 8px 16px; border-radius: 12px; font-size: 16px;
+      cursor: pointer; box-shadow: 0 0 5px #000; backdrop-filter: blur(2px);
+      transition: background 0.3s ease;
+    }
+    #close-btn:hover { background-color: rgba(255,255,255,0.4); }
+    .upgrade-block {
+      background: rgba(255,255,255,0.1); padding: 15px; margin-top: 10px;
+      border-radius: 12px; color: white; text-shadow: 1px 1px 2px #000;
+    }
+    .upgrade-block button {
+      margin-top: 5px; padding: 6px 12px; border-radius: 10px;
+      background: #ff2c55; color: white; border: none; cursor: pointer;
     }
   </style>
 </head>
@@ -107,24 +64,32 @@
   <h1>🐹 HamsterCoin</h1>
   <div class="level-info" id="level-info">Новичок (0 / 400 XP)</div>
   <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-
   <div class="balance" id="balance">Баланс: 0 HAMS</div>
   <div class="plus" id="plus"></div>
-
   <div class="circle" onclick="mineCoins()">
     <img src="hamster.jpg" alt="hamster" />
   </div>
-
-  <button class="upgrade-btn" onclick="openModal()">TikTok Collaboration</button>
+  <button class="upgrade-btn" onclick="openModal()">Улучшения</button>
 
   <!-- Модальное окно -->
   <div id="tiktok-modal">
     <div class="modal-content">
-      <h2>TikTok Collaboration</h2>
-      <p id="tiktok-level">Уровень: 0 / 15</p>
-      <button onclick="confirmUpgrade()" id="upgrade-confirm-btn">Улучшить (+1 за 15 HAMS)</button>
-      <br><br>
-      <button onclick="closeModal()" id="close-btn">Закрыть</button>
+      <h2>Улучшения</h2>
+      <div class="upgrade-block">
+        <p id="tiktok-level">TikTok Collaboration: 0 / 15</p>
+        <button onclick="confirmUpgrade()" id="upgrade-confirm-btn">+1 за 15 HAMS</button>
+      </div>
+      <div class="upgrade-block">
+        <p id="autohams-level">AutoHAMS: 0 / 5</p>
+        <button onclick="buyAutoHAMS()" id="auto-btn">Купить за 500 HAMS</button>
+      </div>
+      
+      <div class="upgrade-block">
+        <p>TurboHAMS: мгновенное ускорение</p>
+        <button onclick="buyTurboHAMS()">Купить за 50 грн</button>
+      </div>
+
+      <br><button onclick="closeModal()" id="close-btn">Закрыть</button>
     </div>
   </div>
 
@@ -135,10 +100,21 @@
       { name: "Саскэ Учиха", xp: 2000, base: 15 },
       { name: "Наруто", xp: 2000, base: 25 }
     ];
-
     let balance = parseInt(localStorage.getItem('hams')) || 0;
     let xp = parseInt(localStorage.getItem('xp')) || 0;
     let upgradeLevel = parseInt(localStorage.getItem('upgrade')) || 0;
+    let autoHams = parseInt(localStorage.getItem('autoHams')) || 0;
+    let lastOnline = parseInt(localStorage.getItem('lastOnline')) || Date.now();
+
+    // начисление авто-хамсов при входе
+    const secondsAway = Math.floor((Date.now() - lastOnline) / 1000);
+    if (autoHams > 0 && secondsAway > 0) {
+      const autoEarned = autoHams * 80 * secondsAway;
+      balance += autoEarned;
+      localStorage.setItem('hams', balance);
+      alert(`+${autoEarned} HAMS заработано в оффлайне!`);
+    }
+    localStorage.setItem('lastOnline', Date.now());
 
     const balanceEl = document.getElementById("balance");
     const plusEl = document.getElementById("plus");
@@ -146,7 +122,9 @@
     const levelInfo = document.getElementById("level-info");
     const modal = document.getElementById("tiktok-modal");
     const upgradeLevelEl = document.getElementById("tiktok-level");
+    const autoLevelEl = document.getElementById("autohams-level");
     const upgradeBtn = document.getElementById("upgrade-confirm-btn");
+    const autoBtn = document.getElementById("auto-btn");
 
     function getCurrentLevel() {
       let total = 0;
@@ -169,21 +147,25 @@
       const mined = lvl.base + upgradeLevel;
       balance += mined;
       xp += mined;
-
       localStorage.setItem('hams', balance);
       localStorage.setItem('xp', xp);
-
+      localStorage.setItem('lastOnline', Date.now());
       plusEl.innerText = `+${mined} HAMS`;
       plusEl.style.opacity = 1;
       setTimeout(() => plusEl.style.opacity = 0, 1000);
+  
+    function buyTurboHAMS() {
+      window.location.href = "https://t.me/vladsvj";
+    }
 
-      updateDisplay();
+    updateDisplay();
     }
 
     function openModal() {
-      upgradeLevelEl.innerText = `Уровень: ${upgradeLevel} / 15`;
+      upgradeLevelEl.innerText = `TikTok Collaboration: ${upgradeLevel} / 15`;
       upgradeBtn.disabled = upgradeLevel >= 15;
-      upgradeBtn.innerText = upgradeLevel >= 15 ? "Максимум улучшений" : "Улучшить (+1 за 15 HAMS)";
+      autoLevelEl.innerText = `AutoHAMS: ${autoHams} / 5`;
+      autoBtn.disabled = autoHams >= 5;
       modal.style.display = "flex";
     }
 
@@ -197,9 +179,35 @@
         upgradeLevel++;
         localStorage.setItem('hams', balance);
         localStorage.setItem('upgrade', upgradeLevel);
-        updateDisplay();
+    
+    function buyTurboHAMS() {
+      window.location.href = "https://t.me/vladsvj";
+    }
+
+    updateDisplay();
         openModal();
       }
+    }
+
+    function buyAutoHAMS() {
+      if (balance >= 500 && autoHams < 5) {
+        balance -= 500;
+        autoHams++;
+        localStorage.setItem('hams', balance);
+        localStorage.setItem('autoHams', autoHams);
+    
+    function buyTurboHAMS() {
+      window.location.href = "https://t.me/vladsvj";
+    }
+
+    updateDisplay();
+        openModal();
+      }
+    }
+
+
+    function buyTurboHAMS() {
+      window.location.href = "https://t.me/vladsvj";
     }
 
     updateDisplay();
