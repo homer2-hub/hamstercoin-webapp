@@ -1,8 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HamsterCoin WebApp</title>
   <style>
     body {
@@ -10,7 +12,6 @@
       font-family: 'Segoe UI', sans-serif;
       text-align: center;
       padding: 30px;
-      touch-action: manipulation;
     }
     h1 { color: #b44e00; }
     .balance { font-size: 24px; margin: 10px; }
@@ -83,25 +84,145 @@
         <p id="autohams-level">AutoHAMS: 0 / 5</p>
         <button onclick="buyAutoHAMS()" id="auto-btn">Купить за 500 HAMS</button>
       </div>
+      
       <div class="upgrade-block">
         <p>TurboHAMS: мгновенное ускорение</p>
         <button onclick="buyTurboHAMS()">Купить за 50 грн</button>
       </div>
+
       <br><button onclick="closeModal()" id="close-btn">Закрыть</button>
     </div>
   </div>
 
-<script>
-  let lastTap = 0;
-  document.addEventListener("touchend", function(e) {
-    const currentTime = new Date().getTime();
-    const tapLength = currentTime - lastTap;
-    if (tapLength < 300 && tapLength > 0) {
-      e.preventDefault();
+  <script>
+    const levels = [
+      { name: "Новичок", xp: 400, base: 1 },
+      { name: "Про", xp: 600, base: 2 },
+      { name: "Саскэ Учиха", xp: 2000, base: 15 },
+      { name: "Наруто", xp: 2000, base: 25 }
+    ];
+    let balance = parseInt(localStorage.getItem('hams')) || 0;
+    let xp = parseInt(localStorage.getItem('xp')) || 0;
+    let upgradeLevel = parseInt(localStorage.getItem('upgrade')) || 0;
+    let autoHams = parseInt(localStorage.getItem('autoHams')) || 0;
+    let lastOnline = parseInt(localStorage.getItem('lastOnline')) || Date.now();
+
+    // начисление авто-хамсов при входе
+    const secondsAway = Math.floor((Date.now() - lastOnline) / 1000);
+    if (autoHams > 0 && secondsAway > 0) {
+      const autoEarned = autoHams * 80 * secondsAway;
+      balance += autoEarned;
+      localStorage.setItem('hams', balance);
+      alert(`+${autoEarned} HAMS заработано в оффлайне!`);
     }
-    lastTap = currentTime;
-  });
+    localStorage.setItem('lastOnline', Date.now());
+
+    const balanceEl = document.getElementById("balance");
+    const plusEl = document.getElementById("plus");
+    const progressFill = document.getElementById("progress-fill");
+    const levelInfo = document.getElementById("level-info");
+    const modal = document.getElementById("tiktok-modal");
+    const upgradeLevelEl = document.getElementById("tiktok-level");
+    const autoLevelEl = document.getElementById("autohams-level");
+    const upgradeBtn = document.getElementById("upgrade-confirm-btn");
+    const autoBtn = document.getElementById("auto-btn");
+
+    function getCurrentLevel() {
+      let total = 0;
+      for (let i = 0; i < levels.length; i++) {
+        total += levels[i].xp;
+        if (xp < total) return { ...levels[i], index: i, currentXP: xp - (total - levels[i].xp), maxXP: levels[i].xp };
+      }
+      return { ...levels[levels.length - 1], index: levels.length - 1, currentXP: levels[levels.length - 1].xp, maxXP: levels[levels.length - 1].xp };
+    }
+
+    function updateDisplay() {
+      balanceEl.innerText = `Баланс: ${balance} HAMS`;
+      const lvl = getCurrentLevel();
+      levelInfo.innerText = `${lvl.name} (${lvl.currentXP} / ${lvl.maxXP} XP)`;
+      progressFill.style.width = `${Math.min(100, (lvl.currentXP / lvl.maxXP) * 100)}%`;
+
+      const tapImage = document.getElementById("tap-image");
+      if (lvl.name === "Саскэ Учиха") {
+        tapImage.src = "ChatGPT Image 15 мая 2025 г., 17_34_30.png";
+      } else if (lvl.name === "Наруто") {
+        tapImage.src = "ChatGPT Image 15 мая 2025 г., 17_32_35.png";
+      } else {
+        tapImage.src = "hamster.jpg";
+      }
+
+    }
+
+    function mineCoins() {
+      const lvl = getCurrentLevel();
+      const mined = lvl.base + upgradeLevel;
+      balance += mined;
+      xp += mined;
+      localStorage.setItem('hams', balance);
+      localStorage.setItem('xp', xp);
+      localStorage.setItem('lastOnline', Date.now());
+      plusEl.innerText = `+${mined} HAMS`;
+      plusEl.style.opacity = 1;
+      setTimeout(() => plusEl.style.opacity = 0, 1000);
+  
+    updateDisplay();
+    }
+
+    function openModal() {
+      upgradeLevelEl.innerText = `TikTok Collaboration: ${upgradeLevel} / 15`;
+      upgradeBtn.disabled = upgradeLevel >= 15;
+      autoLevelEl.innerText = `AutoHAMS: ${autoHams} / 5`;
+      autoBtn.disabled = autoHams >= 5;
+      modal.style.display = "flex";
+    }
+
+    function closeModal() {
+      modal.style.display = "none";
+    }
+
+    function confirmUpgrade() {
+      if (balance >= 15 && upgradeLevel < 15) {
+        balance -= 15;
+        upgradeLevel++;
+        localStorage.setItem('hams', balance);
+        localStorage.setItem('upgrade', upgradeLevel);
+    
+    updateDisplay();
+        openModal();
+      }
+    }
+
+    function buyAutoHAMS() {
+      if (balance >= 500 && autoHams < 5) {
+        balance -= 500;
+        autoHams++;
+        localStorage.setItem('hams', balance);
+        localStorage.setItem('autoHams', autoHams);
+    
+    updateDisplay();
+        openModal();
+      }
+    }
+
+
+    
+
+    updateDisplay();
+  
+function buyTurboHAMS() {
+  window.location.href = "https://t.me/vladsvj";
+}
+
+let lastTap = 0;
+document.addEventListener("touchend", function(e) {
+  const currentTime = new Date().getTime();
+  const tapLength = currentTime - lastTap;
+  if (tapLength < 300 && tapLength > 0) {
+    e.preventDefault();
+  }
+  lastTap = currentTime;
+});
 </script>
-<script src="main.js"></script>
+
 </body>
 </html>
