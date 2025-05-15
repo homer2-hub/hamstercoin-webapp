@@ -23,36 +23,45 @@
       margin: 10px;
       transition: opacity 1s ease-out;
     }
-    button {
-      padding: 15px 25px;
-      font-size: 18px;
-      background: #ffb347;
-      border: none;
-      border-radius: 10px;
+    .circle {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      overflow: hidden;
+      margin: 20px auto;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
       cursor: pointer;
-      box-shadow: 0 4px #aa7430;
     }
-    button:active {
-      box-shadow: none;
-      transform: translateY(2px);
+    .circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
   </style>
 </head>
 <body>
   <h1>🐹 HamsterCoin</h1>
-  <div class="balance" id="balance">Баланс: 100 HAMS</div>
+  <div class="balance" id="balance">Баланс: 0 HAMS</div>
   <div class="plus" id="plus"></div>
-  <button onclick="mineCoins()">⛏ Майнить</button>
+  <div class="circle" onclick="mineCoins()">
+    <img src="hamster.jpg" alt="hamster" />
+  </div>
 
   <script>
-    let balance = 100;
+    let balance = localStorage.getItem('hams') ? parseInt(localStorage.getItem('hams')) : 0;
+    const balanceEl = document.getElementById("balance");
+    const plus = document.getElementById("plus");
+
+    function updateDisplay() {
+      balanceEl.innerText = `Баланс: ${balance} HAMS`;
+    }
 
     function mineCoins() {
       const mined = Math.floor(Math.random() * 21) + 5;
       balance += mined;
+      localStorage.setItem('hams', balance);
+      updateDisplay();
 
-      document.getElementById("balance").innerText = `Баланс: ${balance} HAMS`;
-      const plus = document.getElementById("plus");
       plus.innerText = `+${mined} HAMS`;
       plus.style.opacity = 1;
 
@@ -60,6 +69,8 @@
         plus.style.opacity = 0;
       }, 1000);
     }
+
+    updateDisplay();
   </script>
 </body>
 </html>
