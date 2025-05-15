@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -15,7 +14,7 @@
     h1 { color: #b44e00; }
     .balance {
       font-size: 24px;
-      margin: 20px;
+      margin: 10px;
     }
     .plus {
       font-size: 20px;
@@ -37,37 +36,112 @@
       height: 100%;
       object-fit: cover;
     }
+    .level-info {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    .progress-bar {
+      width: 80%;
+      margin: 0 auto 20px auto;
+      background-color: #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 20px;
+      background-color: #ff9900;
+      width: 0%;
+    }
+    .upgrade-btn {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      background-color: #ff2c55;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
   <h1>🐹 HamsterCoin</h1>
+  <div class="level-info" id="level-info">Новичок (0 / 400 XP)</div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+
   <div class="balance" id="balance">Баланс: 0 HAMS</div>
   <div class="plus" id="plus"></div>
+
   <div class="circle" onclick="mineCoins()">
     <img src="hamster.jpg" alt="hamster" />
   </div>
 
+  <button class="upgrade-btn" onclick="upgrade()">TikTok Collaboration</button>
+
   <script>
-    let balance = localStorage.getItem('hams') ? parseInt(localStorage.getItem('hams')) : 0;
+    const levels = [
+      { name: "Новичок", xp: 400, base: 1 },
+      { name: "Про", xp: 600, base: 2 },
+      { name: "Саскэ Учиха", xp: 2000, base: 15 },
+      { name: "Наруто", xp: 2000, base: 25 }
+    ];
+
+    let balance = parseInt(localStorage.getItem('hams')) || 0;
+    let xp = parseInt(localStorage.getItem('xp')) || 0;
+    let upgradeLevel = parseInt(localStorage.getItem('upgrade')) || 0;
+
     const balanceEl = document.getElementById("balance");
-    const plus = document.getElementById("plus");
+    const plusEl = document.getElementById("plus");
+    const progressFill = document.getElementById("progress-fill");
+    const levelInfo = document.getElementById("level-info");
+
+    function getCurrentLevel() {
+      let total = 0;
+      for (let i = 0; i < levels.length; i++) {
+        total += levels[i].xp;
+        if (xp < total) return { ...levels[i], index: i, currentXP: xp - (total - levels[i].xp), maxXP: levels[i].xp };
+      }
+      // Превышен максимум — Наруто навсегда
+      return { ...levels[levels.length - 1], index: levels.length - 1, currentXP: levels[levels.length - 1].xp, maxXP: levels[levels.length - 1].xp };
+    }
 
     function updateDisplay() {
       balanceEl.innerText = `Баланс: ${balance} HAMS`;
+      const lvl = getCurrentLevel();
+      levelInfo.innerText = `${lvl.name} (${lvl.currentXP} / ${lvl.maxXP} XP)`;
+      progressFill.style.width = `${Math.min(100, (lvl.currentXP / lvl.maxXP) * 100)}%`;
     }
 
     function mineCoins() {
-      const mined = Math.floor(Math.random() * 21) + 5;
+      const lvl = getCurrentLevel();
+      const mined = lvl.base + upgradeLevel;
       balance += mined;
+      xp += mined;
+
       localStorage.setItem('hams', balance);
+      localStorage.setItem('xp', xp);
+
+      plusEl.innerText = `+${mined} HAMS`;
+      plusEl.style.opacity = 1;
+      setTimeout(() => plusEl.style.opacity = 0, 1000);
+
       updateDisplay();
+    }
 
-      plus.innerText = `+${mined} HAMS`;
-      plus.style.opacity = 1;
-
-      setTimeout(() => {
-        plus.style.opacity = 0;
-      }, 1000);
+    function upgrade() {
+      if (balance >= 15 && upgradeLevel < 15) {
+        balance -= 15;
+        upgradeLevel++;
+        localStorage.setItem('hams', balance);
+        localStorage.setItem('upgrade', upgradeLevel);
+        updateDisplay();
+        alert(`Уровень TikTok Collaboration: ${upgradeLevel}/15`);
+      } else {
+        alert(upgradeLevel >= 15 ? "Максимум улучшений!" : "Недостаточно HAMS для улучшения");
+      }
     }
 
     updateDisplay();
